@@ -90,7 +90,7 @@ def get_statics(domain, soup):
             try:
                 content = urlopen(src).read()
                 if os.path.splitext(f_path)[1] == ".css":
-                    content = get_css_parts(content)
+                    content = get_css_parts(domain, content)
                 if content:
                     with open(f_path, "wb") as f:
                         f.write(content)
