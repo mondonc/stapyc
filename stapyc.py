@@ -33,7 +33,7 @@ def get_page(url):
         return BeautifulSoup(content, "html.parser")
     except UnicodeDecodeError:
         parts = urlparse(url)
-        f_path = "{}/{}/{}".format(conf["DEFAULT"]["dest_dir"], parts.hostname, parts.path)
+        f_path = "{}/{}/{}".format(conf[domain]["dest_dir"], parts.hostname, parts.path)
         f_path = make_dirs(f_path)
         with open(f_path, "wb") as f:
             f.write(content)
@@ -43,7 +43,7 @@ def get_page(url):
 def write_local_page(soup, url):
     parts = urlparse(url)
     url_path = parts.path if parts.path else "index.html"
-    f_path = "{}/{}/{}".format(conf["DEFAULT"]["dest_dir"], parts.hostname, url_path)
+    f_path = "{}/{}/{}".format(conf[domain]["dest_dir"], parts.hostname, url_path)
     f_path = make_dirs(f_path)
     with open(f_path, "w", encoding='utf-8') as f:
         f.write(str(soup))
@@ -62,11 +62,11 @@ def get_css_parts(domain, css):
     for l in re.findall(r'url\(([(..)/].*?)\)', css):
         src = "http://{}/{}".format(domain, l)
         url = l.split("?")[0]
-        f_path = "{}/{}/{}/{}".format(conf["DEFAULT"]["dest_dir"], domain, conf["DEFAULT"]["static_path"], url)
+        f_path = "{}/{}/{}/{}".format(conf[domain]["dest_dir"], domain, conf[domain]["static_path"], url)
         f_path = make_dirs(f_path)
         with open(f_path, "wb") as f:
             f.write(urlopen(src).read())
-        css = css.replace("url({})".format(l), "url(/{}/{})".format(conf["DEFAULT"]["static_path"], url))
+        css = css.replace("url({})".format(l), "url(/{}/{})".format(conf[domain]["static_path"], url))
         print("STATIC INC {}".format(src))
     return css.encode()
 
@@ -81,8 +81,8 @@ def get_statics(domain, soup):
             if not parts.hostname:
                 src = "http://{}/{}".format(domain, src)
 
-            f_path = "{}/{}/{}/{}".format(conf["DEFAULT"]["dest_dir"], domain, conf["DEFAULT"]["static_path"], parts.path)
-            el[attr] = "/{}/{}".format(conf["DEFAULT"]["static_path"], parts.path)
+            f_path = "{}/{}/{}/{}".format(conf[domain]["dest_dir"], domain, conf[domain]["static_path"], parts.path)
+            el[attr] = "/{}/{}".format(conf[domain]["static_path"], parts.path)
             if os.path.exists(f_path):
                 continue
             print("STATIC {}".format(src))
@@ -130,7 +130,7 @@ def sniff(domain, url):
         return []
     el = s.find(id=conf[domain]["disclaimer_place_id"])
     if el:
-        el.append(BeautifulSoup(conf[domain]["disclaimer"], "html.parser"))
+        el.append(BeautifulSoup(conf[domain]["disclaimer"].format(datetime.date.today().strftime(conf[domain]["date_format"])), "html.parser"))
     else:
         print("Warning : Unable to find {} to insert disclaimer at {}".format(conf[domain]["disclaimer_place_id"], url))
     clean_page(domain, s)
@@ -141,9 +141,9 @@ def sniff(domain, url):
 
 def write_about_copy_files(domain):
     for f in conf[domain]["about_static_copy_files"].split(" "):
-        f_path = "{}/{}/{}".format(conf["DEFAULT"]["dest_dir"], domain, f)
+        f_path = "{}/{}/{}".format(conf[domain]["dest_dir"], domain, f)
         with open(f_path, "w") as f:
-            f.write(conf["DEFAULT"]["about_static_copy"])
+            f.write(conf[domain]["about_static_copy"])
 
 if __name__ == "__main__":
 
@@ -155,7 +155,7 @@ if __name__ == "__main__":
         raise
 
     for domain in conf.sections():
-        url = "{}://{}".format(conf["DEFAULT"]["proto"], domain)
+        url = "{}://{}".format(conf[domain]["proto"], domain)
         parts = urlparse(url)
         urls = list(sniff(domain, url))
         urls_done.append(domain)

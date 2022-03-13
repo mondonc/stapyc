@@ -11,6 +11,9 @@ static_path = static
 # Disclaimer message
 disclaimer = <center><div class='alert alert-warning'>Read only copy, frozen at {}. (<a href='/about_static_copy.html'>About</a>).</div></center>
 
+# Date format
+date_format = %%m/%%d/%%Y
+
 # Explanations page
 about_static_copy = <html>
     <head>
