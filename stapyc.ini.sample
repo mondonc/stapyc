@@ -1,0 +1,51 @@
+[DEFAULT]
+# Destination directory
+dest_dir = statics/
+
+# Default protocol
+proto = https
+
+# Path to store static elements
+static_path = static
+
+# Disclaimer message
+disclaimer = <center><div class='alert alert-warning'>Read only copy, frozen at {}. (<a href='/about_static_copy.html'>About</a>).</div></center>
+
+# Explanations page
+about_static_copy = <html>
+    <head>
+    <meta charset="UTF-8">
+    </head>
+    <body>
+    <center>
+    <h5>
+    Frozen version, explanations...
+    </h5>
+    </center>
+    </body>
+    </html>
+
+[www.example.org]
+
+# Another possible aliases
+aliases = example.org
+
+# Id to remove
+clean_ids = search-block contact-block comment-form
+
+# Classes to remove
+clean_class = search-form comment-form
+
+# Element's id to append disclaimer
+disclaimer_place_id = navbar
+
+# Urls of explanation page. You can replace login's page.
+about_static_copy_files = about_static_copy.html admin user
+
+
+[www.example2.org]
+aliases = example2.org
+clean_ids = search-block contact-block comment-form
+clean_class = search-form comment-form
+disclaimer_place_id = navbar
+about_static_copy_files = about_static_copy.html admin user
