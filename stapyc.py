@@ -30,12 +30,14 @@ def get_page(url):
         content = urlopen(url).read()
         content.decode()
         return BeautifulSoup(content, "html.parser")
-    except (UnicodeEncodeError, UnicodeDecodeError):
+    except UnicodeDecodeError:
         parts = urlparse(url)
         f_path = "{}/{}/{}".format(conf[domain]["dest_dir"], parts.hostname, parts.path)
         f_path = make_dirs(f_path)
         with open(f_path, "wb") as f:
             f.write(content)
+    except UnicodeEncodeError:
+        print("Error : unable to get {}".format(url))
 
         return None
 
