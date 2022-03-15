@@ -26,12 +26,11 @@ def make_dirs(f_path):
 
 def get_page(url):
     print("GET {}".format(url))
-    content = urlopen(url).read()
-
     try:
+        content = urlopen(url).read()
         content.decode()
         return BeautifulSoup(content, "html.parser")
-    except UnicodeDecodeError:
+    except UnicodeEncodeError, UnicodeDecodeError:
         parts = urlparse(url)
         f_path = "{}/{}/{}".format(conf[domain]["dest_dir"], parts.hostname, parts.path)
         f_path = make_dirs(f_path)
