@@ -30,7 +30,7 @@ def get_page(url):
         content = urlopen(url).read()
         content.decode()
         return BeautifulSoup(content, "html.parser")
-    except UnicodeEncodeError, UnicodeDecodeError:
+    except (UnicodeEncodeError, UnicodeDecodeError):
         parts = urlparse(url)
         f_path = "{}/{}/{}".format(conf[domain]["dest_dir"], parts.hostname, parts.path)
         f_path = make_dirs(f_path)
