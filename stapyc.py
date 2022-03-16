@@ -108,7 +108,7 @@ def is_downloadable_link(domain, href):
         return href
     parts = urlparse(href)
 
-    if parts.hostname == domain or parts.hostname in conf[domain]["aliases"].split(" "):
+    if parts.hostname == domain or conf[domain]["aliases"] and parts.hostname in conf[domain]["aliases"].split(" "):
         return parts.path
 
 def get_links(domain, soup):
