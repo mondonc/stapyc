@@ -25,7 +25,7 @@ def make_dirs(f_path):
 
 
 def get_page(url):
-    print("GET {}".format(url))
+    # print("GET {}".format(url))
     try:
         content = urlopen(url).read()
         content.decode()
@@ -86,7 +86,7 @@ def get_statics(domain, soup):
             el[attr] = "/{}/{}".format(conf[domain]["static_path"], parts.path)
             if os.path.exists(f_path):
                 continue
-            print("STATIC {}".format(src))
+            # print("STATIC {}".format(src))
             f_path = make_dirs(f_path)
             try:
                 content = urlopen(src).read()
@@ -95,7 +95,8 @@ def get_statics(domain, soup):
                 if content:
                     with open(f_path, "wb") as f:
                         f.write(content)
-            except Exception:
+            except Exception as e:
+                print("Error getting statics {} : {}".format(src, str(e)))
                 pass
 
 def is_downloadable_link(domain, href):
