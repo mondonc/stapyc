@@ -127,7 +127,10 @@ def sniff(domain, url):
         s = get_page(url)
     except HTTPError:
         # print("Error : unable to get {}".format(url))
-        write_local_page(BeautifulSoup(conf[domain]["about_static_copy"], "html.parser"), url)
+        try:
+            write_local_page(BeautifulSoup(conf[domain]["about_static_copy"], "html.parser"), url)
+        except Exception:
+            print("Error : unable to get {} and to write about_static_copy".format(url))
         return []
     if not s:
         return []
