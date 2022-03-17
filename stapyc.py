@@ -142,9 +142,12 @@ def sniff(domain, url):
 
 def write_about_copy_files(domain):
     for f in conf[domain]["about_static_copy_files"].split(" "):
-        f_path = "{}/{}/{}".format(conf[domain]["dest_dir"], domain, f)
+        f_dir = "{}/{}/{}".format(conf[domain]["dest_dir"], domain, f)
+        os.makedirs(f_dir, exist_ok=True)
+        f_path = "{}/index.html".format(f_dir)
         with open(f_path, "w") as f:
             f.write(conf[domain]["about_static_copy"])
+    return ["{}://{}/{}".format(conf[domain]["proto"], domain, f) for f in conf[domain]["about_static_copy_files"].split(" ")]
 
 if __name__ == "__main__":
 
@@ -156,6 +159,7 @@ if __name__ == "__main__":
         raise
 
     for domain in conf.sections():
+        urls_done.extend(write_about_copy_files(domain))
         url = "{}://{}".format(conf[domain]["proto"], domain)
         parts = urlparse(url)
         urls = list(sniff(domain, url))
