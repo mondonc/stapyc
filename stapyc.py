@@ -106,8 +106,8 @@ def is_downloadable_link(domain, href):
 
     if href[:5] not in ("http:", 'https'):
         return href
-    parts = urlparse(href)
 
+    parts = urlparse(href)
     if parts.hostname == domain or conf[domain]["aliases"] and parts.hostname in conf[domain]["aliases"].split(" "):
         return parts.path
 
@@ -151,19 +151,20 @@ def write_about_copy_files(domain):
 
 if __name__ == "__main__":
 
-    urls_done = []
     try:
         conf.read(CONF_FILE)
     except Exception:
         print("Error, unable to parse conf file {}".format(CONF_FILE))
         raise
 
+    urls_done = []
     for domain in conf.sections():
         urls_done.extend(write_about_copy_files(domain))
+
         url = "{}://{}".format(conf[domain]["proto"], domain)
-        parts = urlparse(url)
         urls = list(sniff(domain, url))
         urls_done.append(domain)
+
         while urls:
             url = urls.pop()
             urls_done.append(url)
