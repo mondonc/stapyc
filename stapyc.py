@@ -68,7 +68,7 @@ def get_css_parts(domain, css):
         with open(f_path, "wb") as f:
             f.write(urlopen(src).read())
         css = css.replace("url({})".format(l), "url(/{}/{})".format(conf[domain]["static_path"], url))
-        print("STATIC INC {}".format(src))
+        # print("STATIC INC {}".format(src))
     return css.encode()
 
 
