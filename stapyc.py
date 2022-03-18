@@ -165,6 +165,7 @@ if __name__ == "__main__":
 
     urls_done = []
     for domain in conf.sections():
+        print("Getting {}...".format(domain))
         urls_done.extend(write_about_copy_files(domain))
 
         url = "{}://{}".format(conf[domain]["proto"], domain)
