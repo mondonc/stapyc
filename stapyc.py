@@ -37,9 +37,10 @@ def get_page(url):
         with open(f_path, "wb") as f:
             f.write(content)
     except UnicodeEncodeError:
+        print("Error unicode : unable to get {}".format(url))
+    except Exception:
         print("Error : unable to get {}".format(url))
 
-        return None
 
 def write_local_page(soup, url):
     parts = urlparse(url)
