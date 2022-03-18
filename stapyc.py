@@ -13,6 +13,9 @@ import configparser
 conf = configparser.ConfigParser()
 CONF_FILE = "stapyc.ini"
 
+
+urls_done = []
+
 TEXT_CHARACTERS = "".join(list(map(chr, range(32, 127))) + list("\n\r\t\b"))
 
 
@@ -64,8 +67,14 @@ def get_css_parts(domain, css):
     for l in re.findall(r'url\(([(..)/].*?)\)', css):
         src = "http://{}/{}".format(domain, l)
         url = l.split("?")[0]
+
+        if url in urls_done:
+            continue
+
         f_path = "{}/{}/{}/{}".format(conf[domain]["dest_dir"], domain, conf[domain]["static_path"], url)
         f_path = make_dirs(f_path)
+
+        urls_done.append(src)
         with open(f_path, "wb") as f:
             f.write(urlopen(src).read())
         css = css.replace("url({})".format(l), "url(/{}/{})".format(conf[domain]["static_path"], url))
@@ -85,9 +94,10 @@ def get_statics(domain, soup):
 
             f_path = "{}/{}/{}/{}".format(conf[domain]["dest_dir"], domain, conf[domain]["static_path"], parts.path)
             el[attr] = "/{}/{}".format(conf[domain]["static_path"], parts.path)
-            if os.path.exists(f_path):
+            if os.path.exists(f_path) or src in urls_done:
                 continue
             # print("STATIC {}".format(src))
+            urls_done.append(src)
             f_path = make_dirs(f_path)
             try:
                 content = urlopen(src).read()
@@ -163,7 +173,6 @@ if __name__ == "__main__":
         print("Error, unable to parse conf file {}".format(CONF_FILE))
         raise
 
-    urls_done = []
     for domain in conf.sections():
         print("Getting {}...".format(domain))
         urls_done.extend(write_about_copy_files(domain))
