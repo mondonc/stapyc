@@ -165,6 +165,7 @@ def write_about_copy_files(domain):
             f.write(conf[domain]["about_static_copy"])
     return ["{}://{}/{}".format(conf[domain]["proto"], domain, f) for f in conf[domain]["about_static_copy_files"].split(" ")]
 
+
 if __name__ == "__main__":
 
     try:
@@ -174,6 +175,11 @@ if __name__ == "__main__":
         raise
 
     for domain in conf.sections():
+
+        pid = os.fork()
+        if pid == 0:
+            continue
+
         print("Getting {}...".format(domain))
         urls_done.extend(write_about_copy_files(domain))
 
