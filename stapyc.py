@@ -55,10 +55,10 @@ def write_local_page(soup, url):
     return parts.path
 
 def clean_page(domain, soup):
-    for ci in conf[domain]["clean_ids"].split(" "):
+    for ci in [ci for ci in conf[domain]["clean_ids"].split(" ") if ci]:
         for e in soup.findAll(id=ci):
             e.decompose()
-    for cc in conf[domain]["clean_class"].split(" "):
+    for cc in [cc for cc in conf[domain]["clean_class"].split(" ") if cc]:
         for e in soup.findAll(class_=cc):
             e.decompose()
 
