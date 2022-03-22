@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/python3
 
 from urllib.request import urlopen
 from urllib.parse import urlparse
@@ -7,9 +7,7 @@ from bs4 import BeautifulSoup
 import datetime
 import os
 import re
-import logging
 import configparser
-# import string
 conf = configparser.ConfigParser()
 CONF_FILE = "stapyc.ini"
 
@@ -54,6 +52,7 @@ def write_local_page(soup, url):
         f.write(str(soup))
     return parts.path
 
+
 def clean_page(domain, soup):
     for ci in [ci for ci in conf[domain]["clean_ids"].split(" ") if ci]:
         for e in soup.findAll(id=ci):
@@ -62,11 +61,12 @@ def clean_page(domain, soup):
         for e in soup.findAll(class_=cc):
             e.decompose()
 
+
 def get_css_parts(domain, css):
     css = css.decode()
-    for l in re.findall(r'url\(([(..)/].*?)\)', css):
-        src = "http://{}/{}".format(domain, l)
-        url = l.split("?")[0]
+    for link in re.findall(r'url\(([(..)/].*?)\)', css):
+        src = "http://{}/{}".format(domain, link)
+        url = link.split("?")[0]
 
         if url in urls_done:
             continue
@@ -77,7 +77,7 @@ def get_css_parts(domain, css):
         urls_done.append(src)
         with open(f_path, "wb") as f:
             f.write(urlopen(src).read())
-        css = css.replace("url({})".format(l), "url(/{}/{})".format(conf[domain]["static_path"], url))
+        css = css.replace("url({})".format(link), "url(/{}/{})".format(conf[domain]["static_path"], url))
         # print("STATIC INC {}".format(src))
     return css.encode()
 
@@ -110,6 +110,7 @@ def get_statics(domain, soup):
                 print("Error getting statics {} : {}".format(src, str(e)))
                 pass
 
+
 def is_downloadable_link(domain, href):
     if not href or href.startswith("#"):
         return None
@@ -122,16 +123,18 @@ def is_downloadable_link(domain, href):
     parts = urlparse(href)
     if parts.hostname == domain or conf[domain]["aliases"] and parts.hostname in conf[domain]["aliases"].split(" "):
         return parts.path
+    return href
+
 
 def get_links(domain, soup):
     links = set()
     for a in soup.findAll('a'):
-        h = a.get('href')
         href = is_downloadable_link(domain, a.get('href'))
         a["href"] = href
-        if href:
+        if href and not any(conf[domain]["ignore_path"].split(" ")):
             links.add("https://{}/{}".format(domain, href))
     return links
+
 
 def sniff(domain, url):
     try:
@@ -155,6 +158,7 @@ def sniff(domain, url):
     get_statics(domain, s)
     write_local_page(s, url)
     return links
+
 
 def write_about_copy_files(domain):
     for f in conf[domain]["about_static_copy_files"].split(" "):

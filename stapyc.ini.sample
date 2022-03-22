@@ -39,6 +39,9 @@ clean_ids = search-block contact-block comment-form
 # Classes to remove
 clean_class = search-form comment-form
 
+# Ignore path
+ignore_path = /print/ /sample/
+
 # Element's id to append disclaimer
 disclaimer_place_id = navbar
 
@@ -52,3 +55,4 @@ clean_ids = search-block contact-block comment-form
 clean_class = search-form comment-form
 disclaimer_place_id = navbar
 about_static_copy_files = about_static_copy.html admin user
+ignore_path = /print/ /sample/
