@@ -131,7 +131,7 @@ def get_links(domain, soup):
     for a in soup.findAll('a'):
         href = is_downloadable_link(domain, a.get('href'))
         a["href"] = href
-        if href and not any(conf[domain]["ignore_path"].split(" ")):
+        if href and not any(ignored in href for ignored in conf[domain]["ignore_path"].split(" ")):
             links.add("https://{}/{}".format(domain, href))
     return links
 
