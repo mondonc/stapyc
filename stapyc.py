@@ -123,15 +123,14 @@ def is_downloadable_link(domain, href):
     parts = urlparse(href)
     if parts.hostname == domain or conf[domain]["aliases"] and parts.hostname in conf[domain]["aliases"].split(" "):
         return parts.path
-    return href
 
 
 def get_links(domain, soup):
     links = set()
     for a in soup.findAll('a'):
         href = is_downloadable_link(domain, a.get('href'))
-        a["href"] = href
         if href and not any(ignored in href for ignored in conf[domain]["ignore_path"].split(" ")):
+            a["href"] = href
             links.add("https://{}/{}".format(domain, href))
     return links
 
