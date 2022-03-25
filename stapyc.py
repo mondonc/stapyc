@@ -200,3 +200,6 @@ if __name__ == "__main__":
                 if u not in urls_done:
                     urls.append(u)
         write_about_copy_files(domain)
+
+        if pid:
+            break
