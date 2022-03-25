@@ -129,7 +129,7 @@ def get_links(domain, soup):
     links = set()
     for a in soup.findAll('a'):
         href = is_downloadable_link(domain, a.get('href'))
-        if any(ignored in href for ignored in conf[domain]["ignore_path"].split(" ")):
+        if [ignored for ignored in conf[domain]["ignore_path"].split(" ") if ignored in href]:
             a["href"] = ""
         if href:
             a["href"] = href
